@@ -1,4 +1,5 @@
 import logging
+import os
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -17,6 +18,10 @@ app = FastAPI(
     description="Vision-Powered AI for Intelligent Proctoring & Visual Monitoring",
     version="1.0.0",
 )
+
+REPORT_DIR = "reports"
+
+os.makedirs(REPORT_DIR, exist_ok=True)
 
 app.add_middleware(
     CORSMiddleware,
