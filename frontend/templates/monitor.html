@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SightFlow – Monitor</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <style>
+    @keyframes yoloPulse {
+      0%,100% { opacity:1; transform:scale(1);   }
+      50%      { opacity:.4; transform:scale(1.5); }
+    }
+    .yolo-dot {
+      display:inline-block;
+      width:7px; height:7px;
+      border-radius:50%;
+      background:#ef4444;
+      animation:yoloPulse 1s infinite;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a class="nav-brand" href="/">👁 SightFlow</a>
+    <a href="/">Home</a>
+    <a href="/monitor" class="active">Monitor</a>
+    <a href="/dashboard">Dashboard</a>
+    <div class="nav-right">
+      <span id="wsStatus" style="font-size:0.8rem;color:#94a3b8;">Disconnected</span>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <div class="flex-between mb-2" style="margin-bottom:1.5rem;">
+      <div>
+        <div class="page-title">Proctoring Monitor</div>
+        <div class="page-subtitle">Real-time AI-powered session monitoring</div>
+      </div>
+      <div id="monitorStatus" style="font-weight:700;color:#94a3b8;font-size:0.9rem;">SETUP REQUIRED</div>
+    </div>
+
+    <!-- ── SESSION SETUP ─────────────────────────────────────────────── -->
+    <div id="sessionSetup" class="card" style="max-width:480px;margin:0 auto 2rem;">
+      <div class="card-title">New Proctoring Session</div>
+      <div class="form-group">
+        <label>Candidate Name</label>
+        <input type="text" id="candidateName" placeholder="Enter candidate full name" />
+      </div>
+      <button class="btn btn-primary w-full" id="btnCreateSession">🚀 Create Session</button>
+      <div style="margin-top:1rem;padding:0.8rem;background:rgba(6,182,212,0.08);border-radius:8px;font-size:0.82rem;color:#94a3b8;">
+        <strong style="color:#06b6d4;">How it works:</strong><br>
+        1. Create session → 2. Start camera → 3. Register face → 4. Monitoring begins automatically
+      </div>
+    </div>
+
+    <!-- ── MONITOR PANEL ─────────────────────────────────────────────── -->
+    <div id="monitorPanel" class="hidden">
+
+      <!-- Session info bar -->
+      <div class="card mb-2" style="margin-bottom:1rem;padding:1rem;">
+        <div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:center;">
+          <div>
+            <span class="text-muted" style="font-size:0.75rem;">SESSION</span><br>
+            <code style="color:#06b6d4;font-size:1rem;" id="currentSessionId">—</code>
+          </div>
+          <div>
+            <span class="text-muted" style="font-size:0.75rem;">CANDIDATE</span><br>
+            <strong id="currentCandidate">—</strong>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:0.5rem;flex-wrap:wrap;">
+            <button class="btn btn-primary hidden" id="btnRegister">📸 Register Face</button>
+            <button class="btn btn-danger hidden"  id="btnEndSession">⏹ End Session</button>
+            <button class="btn btn-outline hidden" id="btnAnalyze">🤖 AI Analysis</button>
+            <button class="btn btn-accent hidden"  id="btnDownloadReport">📄 PDF Report</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+
+        <!-- ── LEFT col ──────────────────────────────────────────────── -->
+        <div>
+
+          <!-- Video feed -->
+          <div class="video-container" style="position:relative;">
+            <video id="videoFeed" autoplay muted playsinline></video>
+
+            <div class="video-status">
+              <span class="status-dot dot-red" id="videoStatusDot"></span>
+              <span id="videoStatus">Camera Off</span>
+            </div>
+
+            <div class="face-count-badge">
+              👤 <span id="faceCount">0</span> face(s)
+            </div>
+
+            <!-- YOLO live overlay badge (shown when object detected) -->
+            <div id="yoloBadge" style="
+                display:none;
+                position:absolute;
+                bottom:2.8rem;
+                left:0.6rem;
+                align-items:center;
+                gap:0.5rem;
+                background:rgba(239,68,68,0.18);
+                border:1px solid rgba(239,68,68,0.55);
+                border-radius:6px;
+                padding:0.3rem 0.7rem;
+                font-size:0.75rem;
+                font-weight:700;
+                color:#fca5a5;
+                backdrop-filter:blur(4px);
+                z-index:20;">
+              <span class="yolo-dot"></span>
+              <span id="yoloBadgeText">Object Detected</span>
+            </div>
+          </div><!-- end video-container -->
+
+          <div style="margin-top:1rem;">
+            <button class="btn btn-success w-full" id="btnStart">📷 Start Camera</button>
+          </div>
+
+          <!-- Identity + Liveness metrics -->
+          <div class="grid-2 mt-2" style="margin-top:1rem;">
+            <div class="metric-card">
+              <div class="metric-label">Identity Match</div>
+              <div class="metric-value" id="identityScore">—</div>
+              <div class="risk-bar-bg mt-1" style="margin-top:0.4rem;">
+                <div class="risk-bar-fill" id="identityBar" style="width:0%;background:#22c55e;"></div>
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Liveness</div>
+              <div class="metric-value" id="livenessStatus" style="font-size:1.2rem;">—</div>
+            </div>
+          </div>
+
+          <!-- Risk score -->
+          <div class="card mt-2" style="margin-top:1rem;">
+            <div class="flex-between mb-1" style="margin-bottom:0.5rem;">
+              <span class="card-title" style="margin:0;">Risk Score</span>
+              <span class="badge badge-safe" id="riskLevel">SAFE</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:1rem;">
+              <div style="font-size:2.5rem;font-weight:900;" id="riskScore">0</div>
+              <div style="flex:1;">
+                <div class="risk-bar-bg">
+                  <div class="risk-bar-fill" id="riskBar" style="width:0%;background:#22c55e;"></div>
+                </div>
+                <div style="font-size:0.75rem;color:#94a3b8;margin-top:0.2rem;">
+                  0 = Safe &nbsp;|&nbsp; 30+ = Warning &nbsp;|&nbsp; 60+ = High Risk
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- YOLO summary card (hidden until first object detected) -->
+          <div id="yoloSummaryCard" class="card" style="margin-top:1rem;display:none;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;">
+              <span class="card-title" style="margin:0;">🔍 Objects Detected</span>
+              <span id="yoloTotalBadge" style="
+                  background:rgba(239,68,68,0.15);
+                  border:1px solid rgba(239,68,68,0.4);
+                  color:#fca5a5;
+                  font-size:0.72rem;
+                  font-weight:700;
+                  border-radius:20px;
+                  padding:0.15rem 0.6rem;">
+                0 items
+              </span>
+            </div>
+            <!-- Rows injected by updateYoloSummary() in monitor.js -->
+            <div id="yoloObjectList" style="display:flex;flex-direction:column;gap:0.4rem;"></div>
+          </div>
+
+        </div><!-- end LEFT col -->
+
+        <!-- ── RIGHT col ─────────────────────────────────────────────── -->
+        <div>
+
+          <!-- Live alerts -->
+          <div class="card" style="margin-bottom:1rem;">
+            <div class="card-title">Live Alerts</div>
+            <div id="alertContainer" style="min-height:60px;">
+              <div class="text-muted" style="font-size:0.85rem;text-align:center;padding:1rem;">No alerts yet</div>
+            </div>
+          </div>
+
+          <!-- Event log -->
+          <div class="card" style="margin-bottom:1rem;">
+            <div class="card-title">Event Log</div>
+            <div class="log-container" id="eventLog">
+              <div class="log-entry info">[System] SightFlow ready. Create session to begin.</div>
+            </div>
+          </div>
+
+          <!-- YOLO detection log (hidden until first detection) -->
+          <div id="yoloLogCard" class="card" style="display:none;">
+            <div class="card-title">🚨 Object Detection Log</div>
+            <div class="log-container" id="yoloLog" style="max-height:220px;overflow-y:auto;"></div>
+          </div>
+
+        </div><!-- end RIGHT col -->
+      </div><!-- end grid-2 -->
+
+      <!-- AI analysis panel -->
+      <div id="analysisPanel" class="hidden card" style="margin-top:1.5rem;"></div>
+
+    </div><!-- end monitorPanel -->
+  </div><!-- end container -->
+
+  <script src="/static/js/utils.js"></script>
+  <script src="/static/js/monitor.js"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SightFlow – AI Proctoring System</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <nav>
+    <a class="nav-brand" href="/">👁 SightFlow</a>
+    <a href="/" class="active">Home</a>
+    <a href="/monitor">Monitor</a>
+    <a href="/dashboard">Dashboard</a>
+    <div class="nav-right">
+      <span style="font-size:0.8rem;color:#94a3b8;">AI Proctoring v1.0</span>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="hero">
+      <div style="margin-bottom:1rem;">
+        <span class="badge badge-info">Vision-Powered AI</span>
+      </div>
+      <h1>SightFlow</h1>
+      <p>
+        Real-time AI proctoring and visual monitoring system. Verify identities, detect spoofing, monitor behavior, and generate intelligent session reports.
+      </p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="/monitor" class="btn btn-primary" style="font-size:1rem;padding:0.8rem 2rem;">🎬 Start Session</a>
+        <a href="/dashboard" class="btn btn-outline" style="font-size:1rem;padding:0.8rem 2rem;">📊 Dashboard</a>
+      </div>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔐</div>
+        <h3>Real-Time Face Verification</h3>
+        <p>Compares live face embeddings with registered identity. Returns match score and confidence level to detect impersonation.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">👁</div>
+        <h3>Liveness Detection</h3>
+        <p>Anti-spoofing via frame-to-frame motion analysis and eye detection. Flags photo or video replay attacks instantly.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">👥</div>
+        <h3>Multi-Face Detection</h3>
+        <p>Detects when multiple people are in frame. Triggers immediate alert if a second face is detected during session.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🚶</div>
+        <h3>Absence Detection</h3>
+        <p>Monitors candidate presence continuously. Triggers alert if no face detected for more than 5 seconds.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚠️</div>
+        <h3>Intelligent Risk Scoring</h3>
+        <p>Weighted risk engine aggregates all events into a 0-100 risk score with Safe / Warning / High Risk classification.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3>AI Session Summary</h3>
+        <p>LLM generates natural language session summaries after completion. Explainable AI explains why risk score is high.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <h3>Explainable AI</h3>
+        <p>AI explains which events contributed to suspicious behavior and risk score — not just raw numbers.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📄</div>
+        <h3>AI Compliance Report</h3>
+        <p>Downloadable PDF report with risk graphs, event timeline, AI summary, and compliance recommendations.</p>
+      </div>
+    </div>
+
+    <!-- Architecture -->
+    <div class="card mt-3" style="margin-top:3rem;">
+      <div class="card-title">System Architecture</div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;justify-content:center;padding:1rem 0;">
+        <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:0.6rem 1.2rem;text-align:center;font-size:0.85rem;">📷 Camera Stream</div>
+        <div style="color:#94a3b8;">→</div>
+        <div style="background:#1e293b;border:1px solid #3b82f6;border-radius:8px;padding:0.6rem 1.2rem;text-align:center;font-size:0.85rem;">⚡ FastAPI + WebSocket</div>
+        <div style="color:#94a3b8;">→</div>
+        <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:0.6rem 1.2rem;text-align:center;font-size:0.85rem;">🔍 AI Vision Engine</div>
+        <div style="color:#94a3b8;">→</div>
+        <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:0.6rem 1.2rem;text-align:center;font-size:0.85rem;">📊 Risk Scoring</div>
+        <div style="color:#94a3b8;">→</div>
+        <div style="background:#1e293b;border:1px solid #06b6d4;border-radius:8px;padding:0.6rem 1.2rem;text-align:center;font-size:0.85rem;">🤖 LLM Analysis</div>
+        <div style="color:#94a3b8;">→</div>
+        <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:0.6rem 1.2rem;text-align:center;font-size:0.85rem;">📄 PDF Report</div>
+      </div>
+    </div>
+
+    <!-- Tech Stack -->
+    <div class="card mt-2" style="margin-top:1.5rem;margin-bottom:3rem;">
+      <div class="card-title">Tech Stack (100% Open Source)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+        <span class="badge badge-info">FastAPI</span>
+        <span class="badge badge-info">WebSocket</span>
+        <span class="badge badge-info">OpenCV</span>
+        <span class="badge badge-info">face_recognition</span>
+        <span class="badge badge-info">Groq LLM (Free)</span>
+        <span class="badge badge-info">fpdf2</span>
+        <span class="badge badge-info">Matplotlib</span>
+        <span class="badge badge-info">NumPy</span>
+        <span class="badge badge-info">Jinja2</span>
+        <span class="badge badge-info">Python</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

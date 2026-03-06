@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SightFlow – Dashboard</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <nav>
+    <a class="nav-brand" href="/">👁 SightFlow</a>
+    <a href="/">Home</a>
+    <a href="/monitor">Monitor</a>
+    <a href="/dashboard" class="active">Dashboard</a>
+    <div class="nav-right">
+      <button class="btn btn-outline" style="font-size:0.8rem;padding:0.3rem 0.8rem;" onclick="loadSessions()">🔄 Refresh</button>
+      <a href="/monitor" class="btn btn-primary" style="font-size:0.85rem;padding:0.4rem 1rem;">+ New Session</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-title">Session Dashboard</div>
+    <div class="page-subtitle">Overview of all proctoring sessions</div>
+
+    <!-- Stats -->
+    <div class="grid-4" style="margin-bottom:1.5rem;">
+      <div class="metric-card">
+        <div class="metric-value" id="totalSessions">—</div>
+        <div class="metric-label">Total Sessions</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value text-success" id="activeSessions">—</div>
+        <div class="metric-label">Active Now</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value text-danger" id="highRiskCount">—</div>
+        <div class="metric-label">High Risk</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value text-warning" id="avgRisk">—</div>
+        <div class="metric-label">Avg Risk Score</div>
+      </div>
+    </div>
+
+    <!-- Sessions Table -->
+    <div class="card">
+      <div class="flex-between mb-2" style="margin-bottom:1rem;">
+        <div class="card-title" style="margin:0;">All Sessions</div>
+        <span style="font-size:0.8rem;color:#94a3b8;">Auto-refreshes every 10s</span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Session ID</th>
+              <th>Candidate</th>
+              <th>Risk Level</th>
+              <th>Risk Score</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="sessionsTable">
+            <tr><td colspan="6" class="text-center text-muted">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session Detail Modal -->
+  <div id="sessionModal" class="hidden" style="
+    position:fixed;inset:0;background:rgba(0,0,0,0.7);
+    display:flex;align-items:center;justify-content:center;
+    z-index:1000;padding:1rem;
+  ">
+    <div style="
+      background:#1e293b;border:1px solid #334155;border-radius:16px;
+      padding:2rem;max-width:700px;width:100%;max-height:90vh;
+      overflow-y:auto;position:relative;
+    ">
+      <button onclick="closeModal()" style="
+        position:absolute;top:1rem;right:1rem;
+        background:none;border:none;color:#94a3b8;
+        font-size:1.3rem;cursor:pointer;
+      ">✕</button>
+      <div id="modalContent">Loading...</div>
+    </div>
+  </div>
+
+  <script src="/static/js/utils.js"></script>
+  <script src="/static/js/dashboard.js"></script>
+</body>
+</html>
